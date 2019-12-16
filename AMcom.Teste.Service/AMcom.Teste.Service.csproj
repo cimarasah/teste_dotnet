@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AMcom.Teste.DAL.Interface\AMcom.Teste.DAL.Interface.csproj" />
+    <ProjectReference Include="..\AMcom.Teste.Service.Interface\AMcom.Teste.Service.Interface.csproj" />
+  </ItemGroup>
+
+</Project>
