@@ -1,4 +1,5 @@
 ﻿using AMcom.Teste.DAL.Interface.Entity;
+using AMcom.Teste.Service.Interface.DTO;
 using AMcom.Teste.Service.Interface.Enum;
 using GeoAPI.Geometries;
 using NetTopologySuite;
@@ -32,31 +33,47 @@ namespace AMcom.Teste.Service.Interface.Extension
             }
         }
 
-        public static List<Ubs> ImportCsvToUbs(string path)
+        public static List<UbsDTO> ImportCsvToUbs(string path)
         {
-            StreamReader sr = new StreamReader(path);
-            List<Ubs> listData = new List<Ubs>();
-            Ubs importingData;
+            List<UbsDTO> listData = new List<UbsDTO>();
+            UbsDTO importingData;
             string line;
             string[] row = new string[7];
-            while ((line = sr.ReadLine()) != null)
-            {
-                importingData = new Ubs();
-                row = line.Split(',');
+            bool titulo = true;
 
-                importingData = new Ubs()
+            using (FileStream fileStream = new FileStream(
+                    path,
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite))
+            {
+                using (StreamReader streamReader = new StreamReader(fileStream))
                 {
-                    VlrLatitude = Double.Parse(row[0]),
-                    VlrLongitude = Double.Parse(row[1]),
-                    NomEstab = row[2],
-                    DscEndereco = row[3],
-                    DscBairro = row[4],
-                    DscCidade = row[5],
-                    DscEstrutFisicAmbiencia = (int)BasicExtension.ConverterAvaliacao(row[6])
-                };
-                listData.Add(importingData);
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        if (!titulo)
+                        {
+                            importingData = new UbsDTO();
+                            row = line.Split(',');
+
+                            importingData = new UbsDTO()
+                            {
+                                VlrLatitude = Double.Parse(row[0]),
+                                VlrLongitude = Double.Parse(row[1]),
+                                Nome = row[2],
+                                DscEndereco = row[3],
+                                DscBairro = row[4],
+                                DscCidade = row[5],
+                                Avaliacao = ConverterAvaliacao(row[6])
+                            };
+                            listData.Add(importingData);
+                        }
+                        titulo = false;
+
+                    }
+                    return listData;
+                }
             }
-            return listData;
         }
     }
 }

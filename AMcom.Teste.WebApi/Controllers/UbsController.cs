@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AMcom.Teste.Service.Interface.DTO;
+using AMcom.Teste.Service.Interface.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AMcom.Teste.WebApi.Controllers
@@ -10,31 +12,55 @@ namespace AMcom.Teste.WebApi.Controllers
     [ApiController]
     public class UbsController : ControllerBase
     {
-        // GET api/values
+        private readonly IUbsService service;
+
+        public UbsController(IUbsService service)
+        {
+            this.service = service;
+        }
+
+        // GET api/ubs
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public ActionResult<IEnumerable<UbsDTO>> Get() =>
+            Ok(service.GetUbs());
 
-        // GET api/values/5
+        // GET api/ubs/{id}
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
-        {
-            return "value";
-        }
+        public ActionResult<UbsDTO> Get(int id) =>
+            Ok(service.GetUbsByID(id));
+        // GET api/localizaUbs/{latitude}/{longitude}
+        [HttpGet("localizaUbs/{latitude}/{longitude}")]
+        public ActionResult<IEnumerable<UbsDTO>> GetlocalizaUbs(double latitude, double longitude) =>
+            Ok(service.GetByLocationAsync(latitude, longitude, 5));
 
-        // POST api/values
+        // POST api/ubs
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post(UbsDTO ubs)
         {
+            service.Add(ubs);
+            return Ok();
         }
 
-
-        // DELETE api/values/5
+        // POST api/rangeUbs
+        [HttpPost("postRange/{listUbs}")]
+        public IActionResult PostRange(List<UbsDTO> listUbs)
+        {
+            service.AddRange(listUbs);
+            return Ok();
+        }
+        // POST api/ImportUbs/{path}
+        [HttpPost("importUbs/{path}")]
+        public IActionResult ImportUbs(string path)
+        {
+            service.ImportCsvUbs(path);
+            return Ok();
+        }
+        // DELETE api/ubs/{id}
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            service.Delete(id);
+            Ok();
         }
     }
 }

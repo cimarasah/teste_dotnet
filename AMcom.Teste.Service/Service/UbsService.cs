@@ -46,11 +46,18 @@ namespace AMcom.Teste.Service.Service
         {
             
             var list = unitOfWork.Ubs
-                .GetAsyncSpecification(new UbsSpecification(
+                .GetAsyncSpecification(//new UbsSpecification(
                     new UbsNearSpecification(BasicExtension.ToPoint(latitude, longitude)),
-                    new UbsAvaliacaoSpecification()),
-                    1, count, true, x => x.DscEstrutFisicAmbiencia);
+                    //new UbsAvaliacaoSpecification()),
+                    1, count, false, x => x.DscEstrutFisicAmbiencia);
             return mapper.ListMapToModel(list);
+        }
+
+        public bool ImportCsvUbs(string path)
+        {
+            var list = BasicExtension.ImportCsvToUbs(@path);
+            unitOfWork.Ubs.AddRange(mapper.ListMapToEntity(list));
+            return true;
         }
     }
 }
