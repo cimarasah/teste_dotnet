@@ -8,6 +8,10 @@ namespace AMcom.Teste.Service.Interface.DTO
         // Nome, Endereco e Avaliacao
         public string Nome { get; set; }
         public string DscEndereco { get; set; }
+        public double VlrLatitude { get; set; }
+        public double VlrLongitude { get; set; }
         public AvaliacaoEnum Avaliacao { get; set; }
+        public string DscBairro { get; set; }
+        public string DscCidade { get; set; }
     }
 }

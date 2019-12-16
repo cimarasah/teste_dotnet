@@ -6,6 +6,6 @@ namespace AMcom.Teste.DAL.Interface.Specification
     public class UbsNearSpecification : QuerySpecification<Ubs>
     {
         public UbsNearSpecification(IPoint myLocation)
-           : base(_ => true, ubs => ubs.Location.Distance(myLocation), false) { }
+           : base(_ => true, ubs => ubs.Localizacao.Distance(myLocation), false) { }
     }
 }

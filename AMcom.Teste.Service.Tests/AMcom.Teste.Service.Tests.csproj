@@ -21,6 +21,7 @@
     <ProjectReference Include="..\AMcom.Teste.DAL.Interface\AMcom.Teste.DAL.Interface.csproj" />
     <ProjectReference Include="..\AMcom.Teste.DAL\AMcom.Teste.DAL.csproj" />
     <ProjectReference Include="..\AMcom.Teste.Service.Interface\AMcom.Teste.Service.Interface.csproj" />
+    <ProjectReference Include="..\AMcom.Teste.Service\AMcom.Teste.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>

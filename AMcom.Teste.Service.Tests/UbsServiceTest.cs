@@ -2,8 +2,12 @@
 using AMcom.Teste.DAL.Interface.Entity;
 using AMcom.Teste.DAL.Interface.UnitOfWork;
 using AMcom.Teste.DAL.UnitOfWork;
+using AMcom.Teste.Service.Interface.DTO;
 using AMcom.Teste.Service.Interface.Extension;
+using AMcom.Teste.Service.Interface.Mapper;
 using AMcom.Teste.Service.Interface.Service;
+using AMcom.Teste.Service.Mapper;
+using AMcom.Teste.Service.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -21,80 +25,196 @@ namespace AMcom.Teste.Service.Tests
         //pertinente para validar a sua lógica de aplicação.
         private IUnitOfWork unitOfWork;
         private DatabaseContext Context;
-        private List<Ubs> expectedUbs;
-        private Mock<IUbsService> service;
+        private IUbsService service;
+        private IUbsMapper mapper;
         public UbsServiceTest()
         {
             Context = InMemoryContext();
             unitOfWork = new UnitOfWork(Context);
-            expectedUbs = GetListUbs().ToList();
-            this.service = new Mock<IUbsService>() ;
+            mapper = new UbsMapper();
+            service = new UbsService(unitOfWork, mapper) ;
+
+            service.AddRange(GetListUbs());
         }
         [Fact(DisplayName = "Insert List Ubs")]
-        public void UnitOfWork_Insert_List_Ubs()
+        public void Insert_List_Ubs()
         {
-            
 
-            unitOfWork.Ubs.AddRange(expectedUbs);
-            unitOfWork.Commit();
+            var actualUbs = service.GetUbs().ToList();
 
-            var actualUbs = unitOfWork.Ubs.GetUbs().ToList();
-
-            CollectionAssert.AreEquivalent(expectedUbs, actualUbs); 
+            CollectionAssert.AreEquivalent(GetListUbs(), actualUbs); 
         }
 
-        [Fact(DisplayName = "Localiza 5 Ubs mais proximas")]
+        [Fact(DisplayName = "Localiza o Ubs mais proximos")]
         public void Localiza_Ubs_Proximas()
         {
             var latitude = 9.0;
             var longitude = 35.0;
             var count = 5;
-            var ubsMaisProximo = new Ubs()
+            var ubsMaisProximoExperado = new UbsDTO()
             {
-                NomEstab = "USF ENFERMEIRO PEDRO JACINTO AREA 09",
+                Nome = "USF ENFERMEIRO PEDRO JACINTO AREA 09",
                 VlrLatitude = -9.48594331741306,
                 VlrLongitude = -35.8575725555409,
-                Location = BasicExtension.ToPoint(-9.48594331741306, -35.8575725555409),
+                DscBairro = "CENTRO",
+                DscCidade = "Rio Largo",
                 DscEndereco = "R 15 DE AGOSTO",
-                DscEstrutFisicAmbiencia = (int)BasicExtension.ConverterAvaliacao("Desempenho mediano ou  um pouco abaixo da média")
+                Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho mediano ou  um pouco abaixo da média")
             };
 
+            var listAtual = service.GetByLocationAsync(latitude, longitude, count);
 
-            var listLoc = service.Setup(x => 
-            x.GetByLocationAsync(latitude, longitude, count).ElementAt(0).Nome).Returns(ubsMaisProximo.NomEstab)
+            Assert.Equal(ubsMaisProximoExperado.Nome, listAtual.FirstOrDefault().Nome);
+
+
         }
-        private List<Ubs> GetListUbs()
+        [Fact(DisplayName = "Localiza somente 5 Ubs mais proximos")]
+        public void Localiza_5_Ubs_Proximas()
         {
-            return new List<Ubs>()
+            var latitude = 9.0;
+            var longitude = 35.0;
+            var count = 5;
+
+            var listAtual = service.GetByLocationAsync(latitude, longitude, count);
+
+            Assert.Equal(count, listAtual.Count());
+
+
+        }
+        [Fact(DisplayName = "Localiza somente 5 Ubs mais proximos ordenados por Avaliação")]
+        public void Localiza_5_Ubs_Proximas_por_Avaliacao()
+        {
+            var latitude = 9.0;
+            var longitude = 35.0;
+            var count = 5;
+
+            var listAtual = service.GetByLocationAsync(latitude, longitude, count);
+
+            CollectionAssert.Equals(GetListUbsExperada(), listAtual);
+
+
+        }
+        private List<UbsDTO> GetListUbs()
+        {
+            return new List<UbsDTO>()
             {
-                new Ubs()
+                new UbsDTO()
                 {
-                    NomEstab = "US OSWALDO DE SOUZA",
+                    Nome = "US OSWALDO DE SOUZA",
                     VlrLatitude= -10.9112370014188,
                     VlrLongitude= -37.0620775222768,
-                    Location = BasicExtension.ToPoint(-10.9112370014188,-37.0620775222768),
+                    DscBairro = "GETULIO VARGAS",
+                    DscCidade = "Aracaju",
                     DscEndereco = "TV ADALTO BOTELHO",
-                    DscEstrutFisicAmbiencia = (int)BasicExtension.ConverterAvaliacao("Desempenho acima da média")
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho acima da média")
                 },
-                 new Ubs()
+                 new UbsDTO()
                 {
-                    NomEstab = "USF ENFERMEIRO PEDRO JACINTO AREA 09",
+                    Nome = "USF ENFERMEIRO PEDRO JACINTO AREA 09",
                     VlrLatitude= -9.48594331741306,
                     VlrLongitude= -35.8575725555409,
-                    Location = BasicExtension.ToPoint(-9.48594331741306,-35.8575725555409),
+                    DscBairro = "CENTRO",
+                    DscCidade = "Rio Largo",
                     DscEndereco = "R 15 DE AGOSTO",
-                    DscEstrutFisicAmbiencia = (int)BasicExtension.ConverterAvaliacao("Desempenho mediano ou  um pouco abaixo da média")
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho mediano ou  um pouco abaixo da média")
                 },
-                  new Ubs()
+                  new UbsDTO()
                 {
-                    NomEstab = "UNIDADE DE ATENCAO PRIMARIA SAUDE DA FAMILIA",
+                    Nome = "UNIDADE DE ATENCAO PRIMARIA SAUDE DA FAMILIA",
                     VlrLatitude= -23896,
                     VlrLongitude= -53.41,
-                    Location = BasicExtension.ToPoint(-23896,-53.41),
+                    DscBairro = "CENTRO",
+                    DscCidade = "Perobal",
                     DscEndereco = "RUA GUILHERME BRUXEL",
-                    DscEstrutFisicAmbiencia = (int)BasicExtension.ConverterAvaliacao("Desempenho muito acima da média")
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho muito acima da média")
+                },
+                  new UbsDTO()
+                {
+                    Nome = "POSTO DE SAUDE DE BOM JESUS DA ALDEIA",
+                    VlrLatitude= -16.447874307632,
+                    VlrLongitude= -41.0098600387561,
+                    DscBairro = "ALDEIA",
+                    DscCidade = "Jequitinhonha",
+                    DscEndereco = "RUA TEOFILO OTONI",
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho mediano ou  um pouco abaixo da média")
+                },
+                 new UbsDTO()
+                {
+                    Nome = "USF ENFERMEIRO PEDRO JACINTO AREA 09",
+                    VlrLatitude= -6.57331109046917,
+                    VlrLongitude= -35.1076054573049,
+                    DscBairro = "SITIO",
+                    DscCidade = "Mataraca",
+                    DscEndereco = "POSTO ANCORA URUBA,RODOVIA PB N 065",
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho acima da média")
+                },
+                  new UbsDTO()
+                {
+                    Nome = "UNIDADE DE SAUDE DA FAMILIA ANA RAQUEL",
+                    VlrLatitude= -7.03715085983256,
+                    VlrLongitude= -37.2887992858876,
+                    DscBairro = "JD GUANABARA",
+                    DscCidade = "Patos",
+                    DscEndereco = "RUA SEVERINO SOARES",
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho mediano ou  um pouco abaixo da média")
                 }
             };
+        }
+        private List<UbsDTO> GetListUbsExperada()
+        {
+            return new List<UbsDTO>()
+            {
+                new UbsDTO()
+                {
+                    Nome = "US OSWALDO DE SOUZA",
+                    VlrLatitude= -10.9112370014188,
+                    VlrLongitude= -37.0620775222768,
+                    DscBairro = "GETULIO VARGAS",
+                    DscCidade = "Aracaju",
+                    DscEndereco = "TV ADALTO BOTELHO",
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho acima da média")
+                },
+                 new UbsDTO()
+                {
+                    Nome = "USF ENFERMEIRO PEDRO JACINTO AREA 09",
+                    VlrLatitude= -9.48594331741306,
+                    VlrLongitude= -35.8575725555409,
+                    DscBairro = "CENTRO",
+                    DscCidade = "Rio Largo",
+                    DscEndereco = "R 15 DE AGOSTO",
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho mediano ou  um pouco abaixo da média")
+                },
+                  new UbsDTO()
+                {
+                    Nome = "UNIDADE DE ATENCAO PRIMARIA SAUDE DA FAMILIA",
+                    VlrLatitude= -23896,
+                    VlrLongitude= -53.41,
+                    DscBairro = "CENTRO",
+                    DscCidade = "Perobal",
+                    DscEndereco = "RUA GUILHERME BRUXEL",
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho muito acima da média")
+                },
+                  new UbsDTO()
+                {
+                    Nome = "POSTO DE SAUDE DE BOM JESUS DA ALDEIA",
+                    VlrLatitude= -16.447874307632,
+                    VlrLongitude= -41.0098600387561,
+                    DscBairro = "ALDEIA",
+                    DscCidade = "Jequitinhonha",
+                    DscEndereco = "RUA TEOFILO OTONI",
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho mediano ou  um pouco abaixo da média")
+                },
+                 new UbsDTO()
+                {
+                    Nome = "USF ENFERMEIRO PEDRO JACINTO AREA 09",
+                    VlrLatitude= -6.57331109046917,
+                    VlrLongitude= -35.1076054573049,
+                    DscBairro = "SITIO",
+                    DscCidade = "Mataraca",
+                    DscEndereco = "POSTO ANCORA URUBA,RODOVIA PB N 065",
+                    Avaliacao = BasicExtension.ConverterAvaliacao("Desempenho acima da média")
+                }
+            }.OrderBy(ubs => ubs.Avaliacao).ToList();
         }
         private DatabaseContext InMemoryContext()
         {

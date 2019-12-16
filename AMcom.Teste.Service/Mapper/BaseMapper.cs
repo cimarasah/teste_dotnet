@@ -7,7 +7,7 @@ using System.Text;
 
 namespace AMcom.Teste.Service.Mapper
 {
-    public abstract class BaseMapper<T, TEntity> : IBaseMapper<T, TEntity>
+    public abstract partial class BaseMapper<T, TEntity> : IBaseMapper<T, TEntity>
         where T : class
         where TEntity : class
     {

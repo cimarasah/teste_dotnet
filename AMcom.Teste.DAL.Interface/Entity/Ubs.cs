@@ -20,6 +20,6 @@ namespace AMcom.Teste.DAL.Interface.Entity
         public string DscBairro { get; set; }
         public string DscCidade { get; set; }
         public int DscEstrutFisicAmbiencia { get; set; }
-        public IPoint Location { get; set; }
+        public IPoint Localizacao { get; set; }
     }
 }
