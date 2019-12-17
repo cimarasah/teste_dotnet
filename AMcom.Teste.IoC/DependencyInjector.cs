@@ -4,6 +4,8 @@ using AMcom.Teste.Service.Interface.Mapper;
 using AMcom.Teste.Service.Interface.Service;
 using AMcom.Teste.Service.Mapper;
 using AMcom.Teste.Service.Service;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
@@ -18,5 +20,6 @@ namespace AMcom.Teste.IoC
             services.TryAddScoped<IUbsService, UbsService>();
             services.TryAddScoped<IUbsMapper,UbsMapper>();
         }
+        
     }
 }

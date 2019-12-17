@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMcom.Teste.Service.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMcom.Teste.Service.Interface", "AMcom.Teste.Service.Interface\AMcom.Teste.Service.Interface.csproj", "{2C821F48-8B48-4150-9E93-F9930C9DE9CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AMcom.Teste.IoC", "AMcom.Teste.IoC\AMcom.Teste.IoC.csproj", "{2BE02B9E-0A97-4754-884F-92801BB780A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMcom.Teste.IoC", "AMcom.Teste.IoC\AMcom.Teste.IoC.csproj", "{2BE02B9E-0A97-4754-884F-92801BB780A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,21 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AMcom.Teste.DAL.Data;
-using AMcom.Teste.IoC;
-using AMcom.Teste.WebApi.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 
-namespace AMcom.Teste.WebApi
+namespace Value
 {
     public class Startup
     {
@@ -30,16 +26,6 @@ namespace AMcom.Teste.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEntityFrameworkInMemoryDatabase();
-            DependencyInjector.Register(services);
-
-            services
-             .AddDbContext<DatabaseContext>((sp, options) =>
-             {
-                 options.UseInMemoryDatabase()
-                     .UseInternalServiceProvider(sp);
-             });
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSwaggerGen(o =>
             {
@@ -56,28 +42,24 @@ namespace AMcom.Teste.WebApi
                     }
                 }); ;
 
-                
+
             });
-
-
         }
 
-       public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
 
             app.UseHttpsRedirection();
-           // app.UseMiddleware(typeof(ErrorHandlingMiddleware));
-
             app.UseSwagger();
             app.UseSwaggerUI(o =>
             {

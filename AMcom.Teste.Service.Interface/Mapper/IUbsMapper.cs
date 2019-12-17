@@ -6,8 +6,10 @@ using System.Text;
 
 namespace AMcom.Teste.Service.Interface.Mapper
 {
-    public interface IUbsMapper : IBaseMapper<UbsDTO, Ubs>
+    public interface IUbsMapper //: IBaseMapper<UbsDTO, Ubs>
     {
+        IEnumerable<Ubs> ListMapToEntity(IEnumerable<UbsDTO> listModel);
+        IEnumerable<UbsDTO> ListMapToModel(IEnumerable<Ubs> listEntity);
         Ubs MapToEntity(UbsDTO model);
         UbsDTO MapToModel(Ubs entity);
     }
