@@ -1,5 +1,5 @@
-# teste_dotnet
-Teste de desenvolvimento .NET (C#) - AMcom
+# Teste .NET
+Teste de desenvolvimento .NET (C#)
 
 Web API que permite consultar e listar as 5 Unidades Básicas de Saúde (UBSs) mais próximas das coordenadas de latitude e longitude informadas.
 
