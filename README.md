@@ -1,7 +1,7 @@
 # teste_dotnet
 Teste de desenvolvimento .NET (C#) - AMcom
 
-Web API que permite consultar e listas as 5 Unidades Básicas de Saúde (UBSs) mais próximas das coordenadas de latitude e longitude.
+Web API que permite consultar e listar as 5 Unidades Básicas de Saúde (UBSs) mais próximas das coordenadas de latitude e longitude informadas.
 
 ### Solução
 
@@ -25,7 +25,7 @@ A solução está divida nas seguintes camadas:
     * **ImportCsvUbs(string path)** - Importa um arquivo CSV (arquivo exemplo encontrado na pasta Resources)
     * **GetDistancia(double latitude, double longitude)** - Listar as distancias informando latitude e longitude
 
-A estrutuda da aplicações está conforme abaixo:
+### Estrutuda da Aplicação
 
 src\AMcom.Teste.WebApi
 
