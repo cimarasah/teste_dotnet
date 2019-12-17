@@ -1,8 +1,10 @@
 ﻿
-using GeoAPI.Geometries;
+//using GeoAPI.Geometries;
 using NetTopologySuite.Geometries;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Spatial;
 using System.Text;
 
 namespace AMcom.Teste.DAL.Interface.Entity
@@ -20,6 +22,7 @@ namespace AMcom.Teste.DAL.Interface.Entity
         public string DscBairro { get; set; }
         public string DscCidade { get; set; }
         public int DscEstrutFisicAmbiencia { get; set; }
-        public IPoint Localizacao { get; set; }
+        [Column(TypeName = "Geography")]
+        public DbGeography Localizacao { get; set; }
     }
 }

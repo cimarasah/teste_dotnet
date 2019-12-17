@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AMcom.Teste.DAL\AMcom.Teste.DAL.csproj" />
+    <ProjectReference Include="..\AMcom.Teste.IoC\AMcom.Teste.IoC.csproj" />
   </ItemGroup>
 
 </Project>

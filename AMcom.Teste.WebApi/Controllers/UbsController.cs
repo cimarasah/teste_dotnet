@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AMcom.Teste.Service.Interface.DTO;
+﻿using AMcom.Teste.Service.Interface.DTO;
 using AMcom.Teste.Service.Interface.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace AMcom.Teste.WebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Produces("application/json")]
+    [Route("api/ubs")]
     public class UbsController : ControllerBase
     {
         private readonly IUbsService service;
@@ -19,15 +16,17 @@ namespace AMcom.Teste.WebApi.Controllers
             this.service = service;
         }
 
-        // GET api/ubs
-        [HttpGet]
+        // GET api/listarUbs
+        [HttpGet("listarUbs")]
         public ActionResult<IEnumerable<UbsDTO>> Get() =>
             Ok(service.GetUbs());
 
+       
         // GET api/ubs/{id}
         [HttpGet("{id}")]
         public ActionResult<UbsDTO> Get(int id) =>
             Ok(service.GetUbsByID(id));
+
         // GET api/localizaUbs/{latitude}/{longitude}
         [HttpGet("localizaUbs/{latitude}/{longitude}")]
         public ActionResult<IEnumerable<UbsDTO>> GetlocalizaUbs(double latitude, double longitude) =>

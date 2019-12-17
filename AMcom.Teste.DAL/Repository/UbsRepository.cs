@@ -4,6 +4,7 @@ using AMcom.Teste.DAL.Interface.Repository;
 using GeoAPI.Geometries;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Spatial;
 using System.Linq;
 
 namespace AMcom.Teste.DAL.Repository
@@ -55,27 +56,17 @@ namespace AMcom.Teste.DAL.Repository
             }
             GC.SuppressFinalize(this);
         }
-        public IEnumerable<Ubs> GetLocalizaUbsAvaliacao(IPoint localizacao, int size)
+        public IEnumerable<Ubs> GetLocalizaUbsAvaliacao(double Latitude, double Longitude, int size)
         {
             
             return _context.Ubs
-                .OrderBy(ubs => ubs.Localizacao.Distance(localizacao))
+                .OrderBy(ubs => ubs.Localizacao.Distance(DbGeography.FromText("POINT(" + Latitude + "," + Longitude + ")")))
                 .Select(ubs => ubs)
                 .Take(size)
                 .OrderBy(ubs => ubs.DscEstrutFisicAmbiencia)
                 .ToList();
 
         }
-        public IEnumerable<double> Getdistancia(IPoint localizacao)
-        {
-
-            return _context.Ubs
-                .OrderBy(ubs => ubs.Localizacao.Distance(localizacao))
-                .Select(ubs => ubs.Localizacao.Distance(localizacao))
-                // .Take(size)
-                //.OrderBy(ubs => ubs.DscEstrutFisicAmbiencia)
-                .ToList();
-
-        }
+        
     }
 }

@@ -47,16 +47,10 @@ namespace AMcom.Teste.Service.Service
         {
 
             var list = unitOfWork.Ubs
-                        .GetLocalizaUbsAvaliacao(BasicExtension.ToPoint(latitude, longitude), 5);
+                        .GetLocalizaUbsAvaliacao(latitude, longitude, 5);
             return mapper.ListMapToModel(list);
         }
-        public IEnumerable<double> GetDistancia(double latitude, double longitude)
-        {
-
-            var list = unitOfWork.Ubs
-                        .Getdistancia(BasicExtension.ToPoint(latitude, longitude));
-            return list;
-        }
+        
 
         public bool ImportCsvUbs(string path)
         {

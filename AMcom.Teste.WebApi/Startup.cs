@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AMcom.Teste.DAL.Data;
+using AMcom.Teste.IoC;
 using AMcom.Teste.WebApi.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,29 +30,39 @@ namespace AMcom.Teste.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DatabaseContext>(opt => 
-            opt.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=UbsDatabase;Trusted_Connection=True;ConnectRetryCount=0",
-                sqlOptions => sqlOptions.UseNetTopologySuite()));
+            services.AddEntityFrameworkInMemoryDatabase();
+            DependencyInjector.Register(services);
+
+            services
+             .AddDbContext<DatabaseContext>((sp, options) =>
+             {
+                 options.UseInMemoryDatabase()
+                     .UseInternalServiceProvider(sp);
+             });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(o =>
             {
-                c.SwaggerDoc("V1", new Info {
-                    Title = "Meus Ubs",
+                o.SwaggerDoc("v1", new Info
+                {
+                    Title = "UBS API",
                     Description = "Teste de desenvolvimento .NET (C#) - AMcom",
-                    Version = "V1",
-                    License = new License
+                    Version = "v1",
+                    Contact = new Contact()
                     {
-                        Name = "Acesse codigo via GitHub",
+                        Name = "Cimara Sá",
+                        Email = "cimarasah@gmail.com",
                         Url = new Uri("https://github.com/cimarasah/teste_dotnet").ToString()
                     }
-                });
+                }); ;
+
+                
             });
 
-            
+
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+       public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             
             if (env.IsDevelopment())
@@ -62,14 +73,16 @@ namespace AMcom.Teste.WebApi
             {
                 app.UseHsts();
             }
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/Ubs/swagger/v1/swagger.json", "V1 Docs");
-
-            });
+            
 
             app.UseHttpsRedirection();
-            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+           // app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+
+            app.UseSwagger();
+            app.UseSwaggerUI(o =>
+            {
+                o.SwaggerEndpoint("/swagger/v1/swagger.json", "UBS API v1");
+            });
             app.UseMvc();
         }
     }

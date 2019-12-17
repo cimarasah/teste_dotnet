@@ -6,12 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="Microsoft.SqlServer.Types" Version="14.0.1016.290" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AMcom.Teste.DAL.Interface\AMcom.Teste.DAL.Interface.csproj" />
     <ProjectReference Include="..\AMcom.Teste.Service.Interface\AMcom.Teste.Service.Interface.csproj" />
-    <ProjectReference Include="..\AMcom.Teste.WebApi\AMcom.Teste.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

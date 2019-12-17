@@ -12,7 +12,6 @@ namespace AMcom.Teste.DAL.Interface.Repository
         void Add(Ubs ubs);
         void AddRange(IEnumerable<Ubs> ubsList);
         void Delete(int Id);
-        IEnumerable<Ubs> GetLocalizaUbsAvaliacao(IPoint localizacao, int size);
-        IEnumerable<double> Getdistancia(IPoint localizacao);
+        IEnumerable<Ubs> GetLocalizaUbsAvaliacao(double latitude, double longitude, int size);
     }
 }

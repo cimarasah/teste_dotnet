@@ -3,12 +3,30 @@ using AMcom.Teste.Service.Interface.DTO;
 using AMcom.Teste.Service.Interface.Enum;
 using AMcom.Teste.Service.Interface.Extension;
 using AMcom.Teste.Service.Interface.Mapper;
+using Microsoft.SqlServer.Types;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Spatial;
+using System.Data.SqlTypes;
+using System.Linq;
 
 namespace AMcom.Teste.Service.Mapper
 {
-    public class UbsMapper : BaseMapper<UbsDTO,Ubs>, IUbsMapper
+    public class UbsMapper : IUbsMapper//BaseMapper<UbsDTO,Ubs>, 
     {
-        public override Ubs MapToEntity(UbsDTO model) =>
+        public IEnumerable<Ubs> ListMapToEntity(IEnumerable<UbsDTO> listModel)
+        {
+            return listModel
+                    .Where(item => item != null)
+                    .Select(item => MapToEntity(item)).ToList();
+        }
+           //listModel.Select(ubs =>  MapToEntity(ubs));
+
+        
+        public IEnumerable<UbsDTO> ListMapToModel(IEnumerable<Ubs> listEntity) =>
+            listEntity.Select(MapToModel);
+
+        public Ubs MapToEntity(UbsDTO model) =>
             new Ubs()
             {
                 NomEstab = model.Nome,
@@ -21,7 +39,7 @@ namespace AMcom.Teste.Service.Mapper
                 Localizacao = BasicExtension.ToPoint(model.VlrLatitude, model.VlrLongitude)
             };
 
-        public override UbsDTO MapToModel(Ubs entity) =>
+        public UbsDTO MapToModel(Ubs entity) =>
             new UbsDTO()
             {
                 Nome = entity.NomEstab,

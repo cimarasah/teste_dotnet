@@ -6,6 +6,8 @@ using NetTopologySuite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity.Spatial;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -15,11 +17,12 @@ namespace AMcom.Teste.Service.Interface.Extension
 {
     public static class BasicExtension
     {
-        public static IPoint ToPoint(Double latitude, Double longitude)
+        public static DbGeography ToPoint(Double latitude, Double longitude)
         {
-            // SRID = 4326 -> Spatial reference system used by Google maps(WGS84)
-            var geometryFactory = NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326);
-            return geometryFactory.CreatePoint(new Coordinate(latitude, longitude));
+            
+            String lon = NormalizeLongitude(longitude).ToString(CultureInfo.InvariantCulture);
+            String lat = NormalizeLatitude(latitude).ToString(CultureInfo.InvariantCulture);
+            return DbGeography.PointFromText(string.Format("POINT({0} {1})", lon, lat), DbGeography.DefaultCoordinateSystemId);
         }
         public static AvaliacaoEnum ConverterAvaliacao(string DscEstrutFisicAmbiencia)
         { 
@@ -79,7 +82,7 @@ namespace AMcom.Teste.Service.Interface.Extension
                                 DscEndereco = row[3],
                                 DscBairro = row[4],
                                 DscCidade = row[5],
-                                Avaliacao = ConverterAvaliacao(row[6])
+                                Avaliacao = ConverterAvaliacao(row[6])                                
                             };
                             listData.Add(importingData);
                         }
@@ -89,6 +92,23 @@ namespace AMcom.Teste.Service.Interface.Extension
                     return listData;
                 }
             }
+        }
+        public static double NormalizeLatitude(double latitude)
+        {
+            return Math.Min(Math.Max(latitude, -90d), 90d);
+        }
+        public static double NormalizeLongitude(double longitude)
+        {
+            if (longitude < -180d)
+            {
+                longitude = ((longitude + 180d) % 360d) + 180d;
+            }
+            else if (longitude > 180d)
+            {
+                longitude = ((longitude - 180d) % 360d) - 180d;
+            }
+
+            return longitude;
         }
     }
 }
