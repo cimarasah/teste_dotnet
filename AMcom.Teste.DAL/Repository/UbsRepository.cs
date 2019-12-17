@@ -1,13 +1,10 @@
 ﻿using AMcom.Teste.DAL.Data;
 using AMcom.Teste.DAL.Interface.Entity;
 using AMcom.Teste.DAL.Interface.Repository;
-using AMcom.Teste.DAL.Interface.Specification;
-using Microsoft.EntityFrameworkCore;
+using GeoAPI.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace AMcom.Teste.DAL.Repository
 {
@@ -58,20 +55,27 @@ namespace AMcom.Teste.DAL.Repository
             }
             GC.SuppressFinalize(this);
         }
-        public IEnumerable<Ubs> GetAsyncSpecification(Specification<Ubs> specification, int page, int size, bool descending, Expression<Func<Ubs, object>> orderby)
+        public IEnumerable<Ubs> GetLocalizaUbsAvaliacao(IPoint localizacao, int size)
         {
-            var query = _context
-                        .Set<Ubs>()
-                        .Where(specification.ToExpression())
-                        .Skip((page - 1) * size)
-                        .Take(size);
+            
+            return _context.Ubs
+                .OrderBy(ubs => ubs.Localizacao.Distance(localizacao))
+                .Select(ubs => ubs)
+                .Take(size)
+                .OrderBy(ubs => ubs.DscEstrutFisicAmbiencia)
+                .ToList();
 
-            if (descending)
-                query = query.OrderByDescending(orderby);
-            else
-                query = query.OrderBy(orderby);
+        }
+        public IEnumerable<double> Getdistancia(IPoint localizacao)
+        {
 
-            return query.ToList();
+            return _context.Ubs
+                .OrderBy(ubs => ubs.Localizacao.Distance(localizacao))
+                .Select(ubs => ubs.Localizacao.Distance(localizacao))
+                // .Take(size)
+                //.OrderBy(ubs => ubs.DscEstrutFisicAmbiencia)
+                .ToList();
+
         }
     }
 }

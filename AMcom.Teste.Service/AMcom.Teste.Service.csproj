@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AMcom.Teste.DAL.Interface\AMcom.Teste.DAL.Interface.csproj" />
     <ProjectReference Include="..\AMcom.Teste.Service.Interface\AMcom.Teste.Service.Interface.csproj" />
+    <ProjectReference Include="..\AMcom.Teste.WebApi\AMcom.Teste.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

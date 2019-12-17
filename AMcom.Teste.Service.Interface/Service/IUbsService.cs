@@ -12,5 +12,6 @@ namespace AMcom.Teste.Service.Interface.Service
         void Delete(int Id);
         IEnumerable<UbsDTO> GetByLocationAsync(double latitude, double longitude, int count);
         bool ImportCsvUbs(string path);
+        IEnumerable<double> GetDistancia(double latitude, double longitude);
     }
 }

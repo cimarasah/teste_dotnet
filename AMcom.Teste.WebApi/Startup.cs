@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AMcom.Teste.DAL.Data;
+using AMcom.Teste.WebApi.Exceptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,7 +32,7 @@ namespace AMcom.Teste.WebApi
             services.AddDbContext<DatabaseContext>(opt => 
             opt.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=UbsDatabase;Trusted_Connection=True;ConnectRetryCount=0",
                 sqlOptions => sqlOptions.UseNetTopologySuite()));
-
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("V1", new Info {
@@ -46,28 +47,29 @@ namespace AMcom.Teste.WebApi
                 });
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test.Web.Api");
-                c.RoutePrefix = string.Empty;
-            });
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-           
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/Ubs/swagger/v1/swagger.json", "V1 Docs");
+
+            });
+
             app.UseHttpsRedirection();
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
             app.UseMvc();
         }
     }

@@ -1,11 +1,12 @@
-﻿using AMcom.Teste.DAL.Interface.Entity;
-using AMcom.Teste.DAL.Interface.Specification;
-using AMcom.Teste.DAL.Interface.UnitOfWork;
+﻿using AMcom.Teste.DAL.Interface.UnitOfWork;
 using AMcom.Teste.Service.Interface.DTO;
+using AMcom.Teste.Service.Interface.Exceptions;
 using AMcom.Teste.Service.Interface.Extension;
 using AMcom.Teste.Service.Interface.Mapper;
 using AMcom.Teste.Service.Interface.Service;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace AMcom.Teste.Service.Service
 {
@@ -44,19 +45,31 @@ namespace AMcom.Teste.Service.Service
 
         public IEnumerable<UbsDTO> GetByLocationAsync(double latitude, double longitude, int count)
         {
-            
+
             var list = unitOfWork.Ubs
-                .GetAsyncSpecification(//new UbsSpecification(
-                    new UbsNearSpecification(BasicExtension.ToPoint(latitude, longitude)),
-                    //new UbsAvaliacaoSpecification()),
-                    1, count, false, x => x.DscEstrutFisicAmbiencia);
+                        .GetLocalizaUbsAvaliacao(BasicExtension.ToPoint(latitude, longitude), 5);
             return mapper.ListMapToModel(list);
+        }
+        public IEnumerable<double> GetDistancia(double latitude, double longitude)
+        {
+
+            var list = unitOfWork.Ubs
+                        .Getdistancia(BasicExtension.ToPoint(latitude, longitude));
+            return list;
         }
 
         public bool ImportCsvUbs(string path)
         {
-            var list = BasicExtension.ImportCsvToUbs(@path);
-            unitOfWork.Ubs.AddRange(mapper.ListMapToEntity(list));
+            try
+            {
+                var list = BasicExtension.ImportCsvToUbs(@path);
+                unitOfWork.Ubs.AddRange(mapper.ListMapToEntity(list));
+                
+            }
+            catch (IOException ioEx)
+            {
+                throw new BusinessException(ExceptionMessages.ImportacaoArquivo);
+            }
             return true;
         }
     }

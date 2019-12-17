@@ -10,7 +10,6 @@ using AMcom.Teste.Service.Mapper;
 using AMcom.Teste.Service.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,8 +33,6 @@ namespace AMcom.Teste.Service.Tests
             unitOfWork = new UnitOfWork(Context);
             mapper = new UbsMapper();
             service = new UbsService(unitOfWork, mapper) ;
-
-            //service.AddRange(GetListUbs());
         }
         [Fact(DisplayName = "Insert List Ubs")]
         public void Insert_List_Ubs()
@@ -80,8 +77,8 @@ namespace AMcom.Teste.Service.Tests
         [Fact(DisplayName = "Localiza somente 5 Ubs mais proximos")]
         public void Localiza_5_Ubs_Proximas()
         {
-            var latitude = 9.0;
-            var longitude = 35.0;
+            double latitude = -309060215950003;
+            double longitude = -599864888191206;
             var count = 5;
 
             service.AddRange(GetListUbs());
@@ -95,15 +92,15 @@ namespace AMcom.Teste.Service.Tests
         [Fact(DisplayName = "Localiza somente 5 Ubs mais proximos ordenados por Avaliação")]
         public void Localiza_5_Ubs_Proximas_por_Avaliacao()
         {
-            var latitude = 9.0;
-            var longitude = 35.0;
+            double latitude = -309060215950003;
+            double longitude = -599864888191206;
             var count = 5;
 
             service.AddRange(GetListUbs());
 
             var listAtual = service.GetByLocationAsync(latitude, longitude, count);
 
-           // CollectionAssert.Equals(GetListUbsExperada(), listAtual);
+            Assert.Equal("UNIDADE DE ATENCAO PRIMARIA SAUDE DA FAMILIA", listAtual.First().Nome);
 
         }
         [Fact(DisplayName = "Import Csv")]
@@ -118,22 +115,34 @@ namespace AMcom.Teste.Service.Tests
 
 
         }
+
+        [Fact(DisplayName = "Coordenadas")]
+        public void ConvertCoordenadas()
+        {
+            double latitude = -309060215950003;
+            double longitude = -599864888191206;
+            var primeira = BasicExtension.ToPoint(latitude, longitude);
+            var segunda = BasicExtension.ToPoint(latitude, longitude);
+            Assert.True(primeira.Distance(segunda) == 0);
+        }
         [Fact(DisplayName = "Import Csv E Localizar Ubs mais Proxima")]
-        public void Import_Csv_E_Localizar_Ubs_mais_Proxima()
+        public void GetLocaliza()
+
         {
             var path = "C:/tmp/ubs.csv";
             service.ImportCsvUbs(path);
 
-            double latitude = -15.3517413139339;
-            double longitude = -40.7792329788196;
-            var count = 3;
+            double latitude = -309060215950003;
+            double longitude = -599864888191206;
+            var count = 5;
 
-            var listAtual = service.GetByLocationAsync(latitude, longitude, count);
-
-            Assert.Equal("POSTO DE SAUDE CAPINARANA", listAtual.First().Nome);
+            IEnumerable<UbsDTO> listAtual = service.GetByLocationAsync(latitude, longitude, count);
+             Assert.Equal("UBS L 29", listAtual.First().Nome);
 
 
         }
+
+
         private List<UbsDTO> GetListUbs()
         {
             return new List<UbsDTO>()

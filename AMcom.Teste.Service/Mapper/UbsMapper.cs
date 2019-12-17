@@ -3,10 +3,6 @@ using AMcom.Teste.Service.Interface.DTO;
 using AMcom.Teste.Service.Interface.Enum;
 using AMcom.Teste.Service.Interface.Extension;
 using AMcom.Teste.Service.Interface.Mapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AMcom.Teste.Service.Mapper
 {
@@ -35,6 +31,6 @@ namespace AMcom.Teste.Service.Mapper
                 VlrLongitude = entity.VlrLongitude,
                 DscCidade = entity.DscCidade,
                 DscBairro = entity.DscBairro
-            };
+            }; 
     }
 }

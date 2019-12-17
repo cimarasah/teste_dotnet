@@ -5,7 +5,10 @@ using GeoAPI.Geometries;
 using NetTopologySuite;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace AMcom.Teste.Service.Interface.Extension
@@ -19,7 +22,7 @@ namespace AMcom.Teste.Service.Interface.Extension
             return geometryFactory.CreatePoint(new Coordinate(latitude, longitude));
         }
         public static AvaliacaoEnum ConverterAvaliacao(string DscEstrutFisicAmbiencia)
-        {
+        { 
             switch (DscEstrutFisicAmbiencia)
             {
                 case "Desempenho muito acima da média":
@@ -31,6 +34,18 @@ namespace AMcom.Teste.Service.Interface.Extension
                 default:
                     return AvaliacaoEnum.MedianoOuPoucoAbaixoMedia;
             }
+        }
+        public static string GetDescriptionEnum(this System.Enum value)
+        {
+            var enumMember = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+            var descriptionAttribute =
+                enumMember == null
+                    ? default(DescriptionAttribute)
+                    : enumMember.GetCustomAttribute(typeof(DescriptionAttribute)) as DescriptionAttribute;
+            return
+                descriptionAttribute == null
+                    ? value.ToString()
+                    : descriptionAttribute.Description;
         }
 
         public static List<UbsDTO> ImportCsvToUbs(string path)

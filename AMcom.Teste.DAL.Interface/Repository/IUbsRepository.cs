@@ -1,9 +1,7 @@
 ﻿using AMcom.Teste.DAL.Interface.Entity;
-using AMcom.Teste.DAL.Interface.Specification;
+using GeoAPI.Geometries;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace AMcom.Teste.DAL.Interface.Repository
 {
@@ -14,6 +12,7 @@ namespace AMcom.Teste.DAL.Interface.Repository
         void Add(Ubs ubs);
         void AddRange(IEnumerable<Ubs> ubsList);
         void Delete(int Id);
-        IEnumerable<Ubs> GetAsyncSpecification(Specification<Ubs> specification, int page, int size, bool descending, Expression<Func<Ubs, object>> orderby);
+        IEnumerable<Ubs> GetLocalizaUbsAvaliacao(IPoint localizacao, int size);
+        IEnumerable<double> Getdistancia(IPoint localizacao);
     }
 }
